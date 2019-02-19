@@ -14,6 +14,7 @@ import util.TestDataUtil;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 套牌车分析算法实现
@@ -94,43 +95,31 @@ public class TpcCompute {
                             //如果车牌号相同的两车,
                             // 卡口时间相差值，卡口距离值====>速度大于180km/h，则为套牌车。或者
                             // 卡口时间相差小于等于5分钟，同时两车卡口距离大于10KM(即速度大于120km/h)，则为套牌车
-//                            acc.add(id1+"_"+id2);//符合条件的添加到累加器中
-                            Dataset<Row> resultDF = spark.sql("select hphm,clpp,clys,tgsj,kkbh from t_cltgxx where id in (" + id1 + "," + id2 + ")");
-                            resultDF.show();
-                            Dataset<Row> resultDF2 = resultDF.withColumn("jsbh", functions.lit(new Date().getTime()))
-                                    .withColumn("create_time", functions.lit(new Timestamp(new Date().getTime())));
-                            resultDF2.write()
-                                    .format("jdbc")
-                                    //?characterEncoding=UTF-8避免中文乱码
-                                    .option("url", "jdbc:mysql://bigdata03:3306/test?characterEncoding=UTF-8")
-                                    .option("dbtable", "t_tpc_result")
-                                    .option("user", "root")
-                                    .option("password", "123456")
-                                    .mode(SaveMode.Append)
-                                    .save();
+                            acc.add(id1+"_"+id2);//符合条件的添加到累加器中
                         }
                     }
                 }
             }
         });
 
-//        List<String> accValue = acc.value();
-//        for(String id : accValue){
-//            System.out.println("accValue: "+id);
-//            Dataset<Row> resultDF = spark.sql("select hphm,clpp,clys,tgsj,kkbh from t_cltgxx where id in (" + id.split("_")[0] + "," + id.split("_")[1] + ")");
-//            resultDF.show();
-//            Dataset<Row> resultDF2 = resultDF.withColumn("jsbh", functions.lit(new Date().getTime()))
-//                                             .withColumn("create_time", functions.lit(new Timestamp(new Date().getTime())));
-//            resultDF2.write()
-//                    .format("jdbc")
-//                    //?characterEncoding=UTF-8避免中文乱码
-//                    .option("url", "jdbc:mysql://bigdata03:3306/test?characterEncoding=UTF-8")
-//                    .option("dbtable", "t_tpc_result")
-//                    .option("user", "root")
-//                    .option("password", "123456")
-//                    .mode(SaveMode.Append)
-//                    .save();
-//        }
+        List<String> accValue = acc.value();
+        for(String id : accValue){
+            System.out.println("accValue: "+id);
+            Dataset<Row> resultDF = spark.sql("select hphm,clpp,clys,tgsj,kkbh from t_cltgxx where id in (" + id.split("_")[0] + "," + id.split("_")[1] + ")");
+            resultDF.show();
+            //jsbh计算编号，create_time创建时间
+            Dataset<Row> resultDF2 = resultDF.withColumn("jsbh", functions.lit(new Date().getTime()))
+                                             .withColumn("create_time", functions.lit(new Timestamp(new Date().getTime())));
+            resultDF2.write()
+                    .format("jdbc")
+                    //?characterEncoding=UTF-8避免中文乱码
+                    .option("url", "jdbc:mysql://bigdata03:3306/test?characterEncoding=UTF-8")
+                    .option("dbtable", "t_tpc_result")
+                    .option("user", "root")
+                    .option("password", "123456")
+                    .mode(SaveMode.Append)
+                    .save();
+        }
     }
 
 }
