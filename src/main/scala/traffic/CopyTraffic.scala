@@ -3,7 +3,7 @@ package traffic
 import org.apache.spark.api.java.JavaSparkContext
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.util.CollectionAccumulator
-import traffic.utilscala.ComputeUDF
+import utilscala.ComputeUDF
 import util.{MapUtil, TestDataUtil}
 
 
@@ -20,7 +20,7 @@ object CopyTraffic {
       .createOrReplaceTempView("CopyTraffic")
     spark.sparkContext.setLogLevel("ERROR")
     //    spark.udf.register("getTpc",getTpc _)
-    spark.udf.register("getTpc", ComputeUDF.getTpc _)
+    //spark.udf.register("getTpc", ComputeUDF.getTpc _)
 
     /**
       * +------+-------+----+----+----+----+-------------------+--------+----+--------------------+
