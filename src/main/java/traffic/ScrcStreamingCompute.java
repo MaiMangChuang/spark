@@ -56,7 +56,7 @@ public class ScrcStreamingCompute {
         });
         spark.sparkContext().setLogLevel("ERROR");
         JavaSparkContext jsc=new JavaSparkContext(spark.sparkContext());
-        String brokers = "bigdata01:9092";
+        String brokers = "hadoop01:9092";
         String topics = "cnwTopic";
 
         JavaStreamingContext ssc = new JavaStreamingContext(jsc, Durations.seconds(6));
@@ -72,21 +72,7 @@ public class ScrcStreamingCompute {
         //Topic分区
         Map<TopicPartition, Long> offsets = new HashMap<TopicPartition, Long>();
 //        offsets.put(new TopicPartition("topic1", 0), 2L);
-        /**
-         * KafkaUtils老版本的用法，参见spark软件包中的example目录中的相关例子。
-         * 本项目采用新版本的用法。
-         * 通过KafkaUtils.createDirectStream(...)获得kafka数据，kafka相关参数由kafkaParams指定。
-         * LocationStrategies(本地策略)
-         * PreferConsistent方法：将分区数据尽可能均匀地分配给所有可用的Executor(绝大多数情况使用此方法)。
-         * PreferBrokers方法：如果Executor和kafka broker在同一台机器上，用此方法，将优先将分区调度到kafka分区leader所在的主机上。
-         * PreferFixed方法：分区之间的负荷有明显的倾斜，用此方法。允许指定一个明确的分区到主机的映射。
-         *ConsumerStrategies(消费者策略)
-         * 新的Kafka消费者API有许多不同的方式来指定主题。它们相当多的是在对象实例化后进行设置的。
-         * ConsumerStrategies提供了一种抽象，即使spark任务重启，也能获得配置好的消费者信息。
-         * ConsumerStrategies的Subscribe方法通过一个确定的集合来指定Topic
-         * ConsumerStrategies的SubscribePattern方法允许你使用正则表达式来指定Topic。
-         *
-         */
+
         JavaInputDStream<ConsumerRecord<String,String>> lines = KafkaUtils.createDirectStream(
                 ssc,
                 LocationStrategies.PreferConsistent(),

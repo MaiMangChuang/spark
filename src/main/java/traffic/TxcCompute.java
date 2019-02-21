@@ -29,7 +29,6 @@ public class TxcCompute {
         SparkSession spark=SparkSession.builder().enableHiveSupport().appName("TxcCompute").master("local").getOrCreate();
         JavaSparkContext sc=new JavaSparkContext(spark.sparkContext());
         sc.setLogLevel("ERROR");
-
         Dataset<Row> cltgxxDF = spark.sql("select * from t_cltgxx");
         cltgxxDF.show();
         JavaRDD<Row> cltgxxRDD = cltgxxDF.javaRDD();

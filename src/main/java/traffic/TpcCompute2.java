@@ -22,9 +22,7 @@ public class TpcCompute2 {
         //hphm,id,tgsj,lonlat&
         spark.udf().register("getTpc",new ComputeUDF(), DataTypes.StringType);
 
-//        spark.sql("select hphm,concat_ws('_',id,kk_lon_lat,tgsj) as concatValue from t_cltgxx").show(false);
 
-//        spark.sql("select hphm,concat_ws('&',collect_set(concat_ws('_',id,kk_lon_lat,tgsj))) as concatValue from t_cltgxx group by hphm").show(false);
         spark.sql("select hphm,getTpc(concat_ws('&',collect_set(concat_ws('_',id,kk_lon_lat,tgsj)))) as concatInfo from t_cltgxx t where t.tgsj>'2017-03-24 09:22:22' group by hphm").show(false);
 
         Dataset<Row> cltgxxDF = spark.sql("select hphm,concatInfo from (select hphm,getTpc(concat_ws('&',collect_set(concat_ws('_',id,kk_lon_lat,tgsj)))) as concatInfo from t_cltgxx t where t.tgsj>'2017-03-24 09:22:22' group by hphm) where concatInfo is not null");

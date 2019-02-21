@@ -62,7 +62,7 @@ public class TpcStreamingCompute {
         //接着使用spark streaming获取kafka中的数据
         JavaSparkContext jsc=new JavaSparkContext(spark.sparkContext());
         //kafka broker地址，多个地址用逗号分隔
-        String brokers = "bigdata01:9092";
+        String brokers = "hadoop01:9092";
         //kafka topic名称,多个名称用逗号分隔
         String topics = "cnwTopic";
         //创建流处理上下文对象;JavaStreamingContext

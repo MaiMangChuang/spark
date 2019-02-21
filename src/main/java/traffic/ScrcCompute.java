@@ -32,7 +32,7 @@ public class ScrcCompute {
         resultDS2.show();
         resultDS2.write()
                 .format("jdbc")
-                .option("url", "jdbc:mysql://bigdata03:3306/test?characterEncoding=UTF-8")
+                .option("url", "jdbc:mysql://hadoop03:3306/test?characterEncoding=UTF-8")
                 .option("dbtable", "t_scrc_result")
                 .option("user", "root")
                 .option("password", "123456")
